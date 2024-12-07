@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const NutritionCard = () => (
@@ -35,32 +35,32 @@ const NutritionCard = () => (
     
     <View style={styles.quickActions}>
       <TouchableOpacity style={styles.actionButton}>
-        <FontAwesome5 name="egg" size={24} color="#333" />
+        <MaterialCommunityIcons name="food-apple" size={24} color="#333" />
         <Text style={styles.actionText}>Breakfast</Text>
       </TouchableOpacity>
       
       <TouchableOpacity style={styles.actionButton}>
-        <FontAwesome5 name="utensils" size={24} color="#333" />
+        <MaterialCommunityIcons name="food" size={24} color="#333" />
         <Text style={styles.actionText}>Lunch</Text>
       </TouchableOpacity>
       
       <TouchableOpacity style={styles.actionButton}>
-        <FontAwesome5 name="moon" size={24} color="#333" />
+        <MaterialCommunityIcons name="food-turkey" size={24} color="#333" />
         <Text style={styles.actionText}>Dinner</Text>
       </TouchableOpacity>
       
       <TouchableOpacity style={styles.actionButton}>
-        <FontAwesome5 name="cookie-bite" size={24} color="#333" />
+        <MaterialCommunityIcons name="cookie" size={24} color="#333" />
         <Text style={styles.actionText}>Snacks</Text>
       </TouchableOpacity>
       
       <TouchableOpacity style={styles.actionButton}>
-        <FontAwesome5 name="glass-water" size={24} color="#333" />
+        <MaterialCommunityIcons name="cup-water" size={24} color="#333" />
         <Text style={styles.actionText}>Water</Text>
       </TouchableOpacity>
       
       <TouchableOpacity style={styles.actionButton}>
-        <FontAwesome5 name="weight" size={24} color="#333" />
+        <MaterialCommunityIcons name="scale-bathroom" size={24} color="#333" />
         <Text style={styles.actionText}>Weight</Text>
       </TouchableOpacity>
     </View>
