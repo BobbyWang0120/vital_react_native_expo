@@ -1,27 +1,98 @@
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, TextInput, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
+import { useState } from 'react';
 
-// 模拟数据
+// 重构的类别数据
 const categories = [
-  'Chest',
-  'Upper Chest',
-  'Lower Chest',
-  'Back',
-  'Legs',
-  'Shoulders',
-  'Obliques',
-  'Biceps',
-  'Triceps',
-  'Calves',
-  'Forearms',
-  'Core',
-  'Abs',
-  'Popular',
-  'Stretching',
-  'Cardio',
-  'Combinations'
+  {
+    id: 'chest',
+    name: 'Chest',
+    subCategories: [
+      { id: 'upper-chest', name: 'Upper Chest' },
+      { id: 'lower-chest', name: 'Lower Chest' },
+    ]
+  },
+  {
+    id: 'back',
+    name: 'Back',
+    subCategories: []
+  },
+  {
+    id: 'legs',
+    name: 'Legs',
+    subCategories: [
+      { id: 'quads', name: 'Quadriceps' },
+      { id: 'hamstrings', name: 'Hamstrings' },
+    ]
+  },
+  {
+    id: 'shoulders',
+    name: 'Shoulders',
+    subCategories: [
+      { id: 'front-deltoids', name: 'Front Deltoids' },
+      { id: 'side-deltoids', name: 'Side Deltoids' },
+      { id: 'rear-deltoids', name: 'Rear Deltoids' },
+    ]
+  },
+  {
+    id: 'obliques',
+    name: 'Obliques',
+    subCategories: []
+  },
+  {
+    id: 'biceps',
+    name: 'Biceps',
+    subCategories: []
+  },
+  {
+    id: 'triceps',
+    name: 'Triceps',
+    subCategories: []
+  },
+  {
+    id: 'calves',
+    name: 'Calves',
+    subCategories: []
+  },
+  {
+    id: 'forearms',
+    name: 'Forearms',
+    subCategories: []
+  },
+  {
+    id: 'core',
+    name: 'Core',
+    subCategories: []
+  },
+  {
+    id: 'abs',
+    name: 'Abs',
+    subCategories: []
+  },
+  {
+    id: 'popular',
+    name: 'Popular',
+    subCategories: []
+  },
+  {
+    id: 'stretching',
+    name: 'Stretching',
+    subCategories: []
+  },
+  {
+    id: 'cardio',
+    name: 'Cardio',
+    subCategories: []
+  },
+  {
+    id: 'combinations',
+    name: 'Combinations',
+    subCategories: []
+  }
 ];
+
+const filterTabs = ['Common', 'Barbell', 'Dumbbell', 'Cable'];
 
 const exercises = [
   {
@@ -62,9 +133,19 @@ const exercises = [
   },
 ];
 
-const filterTabs = ['Common', 'Barbell', 'Dumbbell', 'Cable'];
-
 export default function ExercisesScreen() {
+  const [selectedCategory, setSelectedCategory] = useState('chest');
+  const [expandedCategories, setExpandedCategories] = useState(['chest']);
+
+  const toggleCategory = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setExpandedCategories(prev => 
+      prev.includes(categoryId)
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.searchContainer}>
@@ -88,23 +169,46 @@ export default function ExercisesScreen() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.categorySidebarContent}
           >
-            {categories.map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.categoryItem,
-                  index === 0 && styles.categoryItemActive
-                ]}
-              >
-                <Text
+            {categories.map((category) => (
+              <View key={category.id}>
+                <TouchableOpacity
                   style={[
-                    styles.categoryText,
-                    index === 0 && styles.categoryTextActive
+                    styles.categoryItem,
+                    selectedCategory === category.id && styles.categoryItemActive
                   ]}
+                  onPress={() => toggleCategory(category.id)}
                 >
-                  {category}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.categoryText,
+                      selectedCategory === category.id && styles.categoryTextActive
+                    ]}
+                  >
+                    {category.name}
+                  </Text>
+                </TouchableOpacity>
+                
+                {/* 子类别 */}
+                {expandedCategories.includes(category.id) && category.subCategories.map((subCategory) => (
+                  <TouchableOpacity
+                    key={subCategory.id}
+                    style={[
+                      styles.subCategoryItem,
+                      selectedCategory === subCategory.id && styles.categoryItemActive
+                    ]}
+                    onPress={() => setSelectedCategory(subCategory.id)}
+                  >
+                    <Text
+                      style={[
+                        styles.subCategoryText,
+                        selectedCategory === subCategory.id && styles.categoryTextActive
+                      ]}
+                    >
+                      {subCategory.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             ))}
           </ScrollView>
         </View>
@@ -218,6 +322,13 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderLeftColor: 'transparent',
   },
+  subCategoryItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingLeft: 32,
+    borderLeftWidth: 3,
+    borderLeftColor: 'transparent',
+  },
   categoryItemActive: {
     borderLeftColor: '#4A90E2',
     backgroundColor: '#fff',
@@ -225,6 +336,10 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 15,
     color: '#666',
+  },
+  subCategoryText: {
+    fontSize: 14,
+    color: '#888',
   },
   categoryTextActive: {
     color: '#4A90E2',
