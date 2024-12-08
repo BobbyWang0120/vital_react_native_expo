@@ -135,15 +135,30 @@ const exercises = [
 
 export default function ExercisesScreen() {
   const [selectedCategory, setSelectedCategory] = useState('chest');
-  const [expandedCategories, setExpandedCategories] = useState(['chest']);
 
-  const toggleCategory = (categoryId: string) => {
+  const handleCategoryPress = (categoryId: string) => {
+    // 如果点击的是当前选中的类别，不做任何改变
+    if (selectedCategory === categoryId) {
+      return;
+    }
+    // 否则切换到新的类别
     setSelectedCategory(categoryId);
-    setExpandedCategories(prev => 
-      prev.includes(categoryId)
-        ? prev.filter(id => id !== categoryId)
-        : [...prev, categoryId]
-    );
+  };
+
+  // 检查一个类别是否应该展开其子类别
+  const shouldShowSubCategories = (category: typeof categories[0]) => {
+    // 如果当前类别被选中，展开子类别
+    if (selectedCategory === category.id) {
+      return true;
+    }
+    // 如果当前类别的任何子类别被选中，也展开子类别
+    return category.subCategories.some(sub => sub.id === selectedCategory);
+  };
+
+  // 检查一个类别是否处于激活状态
+  const isCategoryActive = (category: typeof categories[0]) => {
+    return selectedCategory === category.id || 
+           category.subCategories.some(sub => sub.id === selectedCategory);
   };
 
   return (
@@ -174,22 +189,22 @@ export default function ExercisesScreen() {
                 <TouchableOpacity
                   style={[
                     styles.categoryItem,
-                    selectedCategory === category.id && styles.categoryItemActive
+                    isCategoryActive(category) && styles.categoryItemActive
                   ]}
-                  onPress={() => toggleCategory(category.id)}
+                  onPress={() => handleCategoryPress(category.id)}
                 >
                   <Text
                     style={[
                       styles.categoryText,
-                      selectedCategory === category.id && styles.categoryTextActive
+                      isCategoryActive(category) && styles.categoryTextActive
                     ]}
                   >
                     {category.name}
                   </Text>
                 </TouchableOpacity>
                 
-                {/* 子类别 */}
-                {expandedCategories.includes(category.id) && category.subCategories.map((subCategory) => (
+                {/* 子类别 - 在父类别或任何子类别被选中时显示 */}
+                {shouldShowSubCategories(category) && category.subCategories.map((subCategory) => (
                   <TouchableOpacity
                     key={subCategory.id}
                     style={[
